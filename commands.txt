@@ -1,4 +1,7 @@
+## This command use for creating virtual enviroment ##
 python -m venv venv
+
+## Activate virtual enviroment ##
 venv\scripts\activate
 
 ## use this pip for all fastapi package install ##
@@ -6,28 +9,15 @@ pip install "fastapi[standard]"
 pip install passlib[bcrypt]
 pip install sqlalchemy alembic
 
-pip install -r requirements.txt
+
+## This use to store install packages into requirements.txt ## 
 pip freeze > requirements.txt
 
+## This command use requirements.txt all packages install
+pip install -r requirements.txt
 
 --->  Run Command  <---
 uvicorn main:app --reload
 
-
 ----> Ip Address Used <----
-uvicorn main:app --host 192.168.0.42 --port 8000 --reload
 uvicorn main:app --host 127.0.0.1 --port 8000
-
-uvicorn main:app --host 192.168.43.205 --port 8000 --reload
-
-Migrations Commands
-
-1. alembic init alembic
-2. alembic.ini --> Add Database Url
-3. alembic/versions/env.py --> import models and Base.metadata
-
-// makemigrations
-4. alembic revision --autogenerate
-
-// migrate
-5. alembic upgrade head
