@@ -1,4 +1,4 @@
-First make directory
+First make project directory
 
 after create virtual environment for in future package version not create issue.
 
