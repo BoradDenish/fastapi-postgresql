@@ -21,3 +21,15 @@ uvicorn main:app --reload
 
 ----> Ip Address Used <----
 uvicorn main:app --host 127.0.0.1 --port 8000
+
+Migrations Commands
+
+1. alembic init alembic
+2. alembic.ini --> Add Database Url
+3. alembic/versions/env.py --> import models and Base.metadata
+
+// makemigrations
+4. alembic revision --autogenerate
+
+// migrate
+5. alembic upgrade head

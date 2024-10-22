@@ -19,11 +19,12 @@ DB_PORT = os.getenv('DB_PORT')
 print(f"DB_USER={DB_USER}, DB_PASSWORD={DB_PASSWORD}, DB_HOST={DB_HOST}, DB_PORT={DB_PORT}, DB_NAME={DB_NAME}")
 
 # Create PostgreSQL connection URL
-DB_URL = f"postgresql://{DB_USER}:{quote(DB_PASSWORD)}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-print("DB_URL:", DB_URL)  # Debug: Print DB_URL
+DB_PASSWORD = quote(DB_PASSWORD).replace('%', '%%')
+DATABASE_URL = f"postgresql://{DB_USER}:{quote(DB_PASSWORD)}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+print("DATABASE_URL:", DATABASE_URL)  # Debug: Print DATABASE_URL
 
 # Create engine
-engine = create_engine(DB_URL, pool_pre_ping=True, pool_recycle=3600, pool_size=20, max_overflow=50)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=3600, pool_size=20, max_overflow=50)
 connection = engine.connect()  # Try to connect to the database
 print("Connection successful!")
 
