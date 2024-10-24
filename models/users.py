@@ -1,5 +1,7 @@
-from sqlalchemy import Column, Integer, String, Boolean, text, TIMESTAMP
+from datetime import datetime
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String, Boolean, text, TIMESTAMP
 from config.connection import Base
+from sqlalchemy.orm import relationship
 
 
 
@@ -15,3 +17,22 @@ class User(Base):
     created_at      = Column(TIMESTAMP(timezone=True), server_default=text('now()'))
     updated_at      = Column(TIMESTAMP(timezone=True), nullable=True)
     deleted_at      = Column(TIMESTAMP(timezone=True), nullable=True)
+
+    session = relationship("User", back_populates="session")
+
+
+    
+class Session(Base):
+    __tablename__ = "user_session"
+
+    session_id      = Column(Integer, primary_key=True, index=True)
+    session_email   = Column(String(255))
+    session_token   = Column(String(955))
+    session_user    = Column(Integer, ForeignKey("users.user_id"))
+    session_expiry  = Column(DateTime, default=datetime.now())
+    session_status  = Column(Boolean, default=1)
+    deleted_at      = Column(Boolean, default=0)
+    created_at      = Column(DateTime, default=datetime.now(), nullable=True)
+    updated_at      = Column(DateTime, nullable=True)
+
+    user            = relationship("User", back_populates="session")
