@@ -23,10 +23,14 @@ DB_PASSWORD = quote(DB_PASSWORD).replace('%', '%%')
 DATABASE_URL = f"postgresql://{DB_USER}:{quote(DB_PASSWORD)}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 print("DATABASE_URL:", DATABASE_URL)  # Debug: Print DATABASE_URL
 
-# Create engine
-engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=3600, pool_size=20, max_overflow=50)
-connection = engine.connect()  # Try to connect to the database
-print("Connection successful!")
+try:
+    # Create engine
+    engine = create_engine(DATABASE_URL, pool_pre_ping=True, pool_recycle=3600, pool_size=20, max_overflow=50)
+    connection = engine.connect()  # Try to connect to the database
+    print("Connection successful!")
+except:
+    print("Database Not Connection!")
+
 
 # Declare session and Base
 SessionMaker = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -38,3 +42,4 @@ def get_db():
         yield db
     finally:
         db.close()
+

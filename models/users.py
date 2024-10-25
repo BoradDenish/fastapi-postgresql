@@ -18,7 +18,7 @@ class User(Base):
     updated_at      = Column(TIMESTAMP(timezone=True), nullable=True)
     deleted_at      = Column(TIMESTAMP(timezone=True), nullable=True)
 
-    session = relationship("User", back_populates="session")
+    session = relationship("Session", back_populates="user")
 
 
     

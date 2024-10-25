@@ -1,9 +1,18 @@
+import os
 import re
 from typing import Optional
 from pydantic import BaseModel, validator, root_validator
 from passlib.context import CryptContext
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+ALGORITHM  = "HS256"
+SECRET_KEY = os.getenv('SECRET_KEY')
+ACCESS_TOKEN_EXPIRE_MINUTES = 1440
 
 
 # Function to validate email format
@@ -29,21 +38,12 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 class SignupValidate(BaseModel):
     user_name       : Optional[str]
     user_email      : Optional[str]
-    user_phone_no   : Optional[str]
     user_password   : Optional[str]
 
     @validator('user_email', pre=True, always=True)
     def check_user_email(cls, v):
         if v and not email_validation(v):
             raise ValueError('Please provide a proper email.')
-        return v
-
-    @validator('user_phone_no', pre=True, always=True)
-    def check_user_phone_no(cls, v):
-        if v is not None and not v.isdigit():
-            raise ValueError('Phone number must contain only digits.')
-        if v is not None and len(v) != 10:
-            raise ValueError('Phone number must contain exactly 10 digits.')
         return v
 
     @root_validator(pre=True)
@@ -54,6 +54,19 @@ class SignupValidate(BaseModel):
             raise ValueError("Please provide a user password.")
         if not values.get('user_email'):
             raise ValueError("Please provide a user email.")
-        if not values.get('user_phone_no'):
-            raise ValueError("Please provide a user phone number.")
+        return values
+
+
+
+class SigninValidation(BaseModel):
+    user_email      : Optional[str]
+    user_password   : Optional[str]
+
+    @root_validator(pre=True)
+    def check_required_fields(cls, values):
+        if not values.get('user_email'):
+            raise ValueError("Please provide a user email.")
+
+        if not values.get('user_password'):
+            raise ValueError("Please provide a user password.")
         return values
