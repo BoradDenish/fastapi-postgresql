@@ -3,6 +3,7 @@ import re
 from typing import Optional
 from pydantic import BaseModel, validator, root_validator
 from passlib.context import CryptContext
+from jose import jwt, JWTError
 from dotenv import load_dotenv
 
 # Load environment variables
@@ -22,6 +23,16 @@ def email_validation(user_email: str) -> Optional[str]:
     if not re.match(pattern, cus_email_lower):
         return None
     return user_email
+
+
+# Decode jwt token
+def get_token_payload(token: str) -> dict:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        return payload
+    except JWTError:
+        # raise HTTPException(status_code=401, detail="Invalid or expired token")
+        return None
 
 
 # Password hashing and verification functions

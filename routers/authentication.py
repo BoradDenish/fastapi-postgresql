@@ -103,7 +103,7 @@ def sign_in(
     return JSONResponse({
         "success"      : 1,
         "message"      : "Login Successful.",
-        "session_token": user_session.session_token,
+        "session_token": token,
         "user_id"      : str(user.user_id),
     })
 
