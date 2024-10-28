@@ -60,7 +60,7 @@ async def auth_middleware(request: Request, call_next):
 
     skip_paths = ["/", "/docs", "/redoc", "/openapi.json", "/favicon.ico"]
 
-    if request.url.pathrequest.url.path in skip_paths or any(request.url.path.startswith(f"{path}/") for path in skip_paths):
+    if request.url.path in skip_paths or any(request.url.path.startswith(f"{path}/") for path in skip_paths):
         response = await call_next(request)
         return response
 
