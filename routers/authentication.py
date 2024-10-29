@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 import logging
 from typing import Dict
-from fastapi import APIRouter, Depends, Form
+from fastapi import APIRouter, Depends, Form, Request
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session as DBSession
 from jose import jwt
@@ -129,5 +129,39 @@ def create_user_session(db: DBSession, user: User, token: str, expiry_minutes: i
     db.commit()
     db.refresh(new_session)
     return new_session
+
+
+
+
+@router.post("/logout")
+def logout(request: Request, db: DBSession = Depends(get_db)):
+    authorization: str = request.headers.get("Authorization")
+
+    if not authorization:
+        return JSONResponse({"success": 0, "message": "Authorization header is missing"})
+
+    token_parts = authorization.split()
+
+    if len(token_parts) != 2 or token_parts[0].lower() != "bearer":
+        return JSONResponse({"success": 0, "message": "Invalid Authorization header format"})
+
+    token = token_parts[1]
+
+    session_record = db.query(Session).filter(
+        Session.deleted_at == datetime.now(),
+        Session.session_status == 1,
+        Session.session_token == token
+    ).first()
+
+    if not session_record:
+        return JSONResponse({"success": 0, "message": "Session not found or already deleted"})
+
+    session_record.is_deleted = True
+    session_record.session_status = 0
+    db.commit()
+
+    return JSONResponse({"success": 1, "message": "Successfully logged out"})
+
+
 
 
